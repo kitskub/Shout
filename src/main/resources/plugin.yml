@@ -1,0 +1,16 @@
+authors: [kitskub]
+main: me.kitskub.shout.Shout
+name: Shout
+url: http://github.com/kitskub/Shout
+version: '1.0'
+softdepend: []
+# Commands
+commands:
+  shout:
+    description: Shout a message to all players
+    usage: /shout <message>
+    permission: shout.shout
+# Permission nodes
+permissions:
+  shout.bypass:
+    description: Allows a player to bypass the time limit
