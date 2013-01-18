@@ -13,7 +13,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 public class ShoutCommand implements  CommandExecutor {
     private Map<String, Long> lastShout = new HashMap<String, Long>();
     
-    public void onShout(Player p, String message) {
+    public void shout(Player p, String message) {
         AsyncPlayerChatEvent event = new AsyncPlayerChatEvent(true, p, message, new HashSet<Player>());
         Bukkit.getPluginManager().callEvent(event);
         String newMessage = String.format(event.getFormat(), event.getPlayer().getDisplayName(), event.getMessage());
@@ -27,22 +27,21 @@ public class ShoutCommand implements  CommandExecutor {
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            return true;
-        }
-        if (sender.hasPermission("shout.bypass")) {
+            Shout.getInstance().getLogger().info("Cancelling shout because not player.");
             return true;
         }
         if (args.length < 1) {
+            sender.sendMessage("Your shout must contain a message!");
             return false;
         }
         double elapsed = lastShout.get(sender.getName())/(1000000000000.0d);
         double waitTime = Shout.getInstance().waitTime();
-        if (lastShout.containsKey(sender.getName()) &&  elapsed < waitTime) {
+        if (lastShout.containsKey(sender.getName()) &&  elapsed < waitTime && !sender.hasPermission("shout.bypass")) {
             sender.sendMessage("You must wait " + (waitTime - elapsed) + " seconds more");
             return true;
         }
         lastShout.put(sender.getName(), System.nanoTime());
-        onShout((Player) sender, args[0]);
+        shout((Player) sender, args[0]);
         return true;
     }
 }
