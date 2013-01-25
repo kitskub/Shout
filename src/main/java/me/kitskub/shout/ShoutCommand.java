@@ -34,9 +34,15 @@ public class ShoutCommand implements  CommandExecutor {
             sender.sendMessage("Your shout must contain a message!");
             return false;
         }
-        double elapsed = lastShout.get(sender.getName())/(1000000000000.0d);
+        long e;
+        if (!lastShout.containsKey(sender.getName())) {
+            e = 0;
+        } else {
+            e = lastShout.get(sender.getName());
+        }
+        double elapsed = e/(1000000000000.0d);
         double waitTime = Shout.getInstance().waitTime();
-        if (lastShout.containsKey(sender.getName()) &&  elapsed < waitTime && !sender.hasPermission("shout.bypass")) {
+        if (elapsed < waitTime && !sender.hasPermission("shout.bypass")) {
             sender.sendMessage("You must wait " + (waitTime - elapsed) + " seconds more");
             return true;
         }
